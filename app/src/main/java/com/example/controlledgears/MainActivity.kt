@@ -124,10 +124,8 @@ class MainActivity : AppCompatActivity() {
         setupExpandableSection(binding.layoutRainbowHeader, binding.layoutRainbowPanel, binding.ivRainbowArrow)
         setupExpandableSection(binding.layoutFadeHeader, binding.layoutFadePanel, binding.ivFadeArrow)
         setupExpandableSection(binding.layoutFireHeader, binding.layoutFirePanel, binding.ivFireArrow)
-        setupExpandableSection(binding.layoutTextHeader, binding.layoutTextPanel, binding.ivTextArrow)
 
         setupColorPicker()
-        setupTextSection()
 
         updateBluetoothButtonState()
         checkForUpdates()
@@ -148,16 +146,6 @@ class MainActivity : AppCompatActivity() {
             } else {
                 panel.visibility = View.VISIBLE
                 arrow.animate().rotation(180f).setDuration(300).start()
-            }
-        }
-    }
-
-    private fun setupTextSection() {
-        binding.btnSendText?.setOnClickListener {
-            val text = binding.etCustomText?.text?.toString() ?: ""
-            if (text.isNotEmpty()) {
-                sendBluetoothData(text)
-                binding.etCustomText?.text?.clear()
             }
         }
     }

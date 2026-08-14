@@ -210,60 +210,7 @@
                     android:textColor="#BBBBBB" />
             </LinearLayout>
 
-            <!-- Section Custom Text -->
-            <LinearLayout
-                android:id="@+id/layout_text_header"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:background="#222222"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="12dp">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/custom_text"
-                    android:textColor="#FFFFFF"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-                <ImageView
-                    android:id="@+id/iv_text_arrow"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@android:drawable/arrow_down_float"
-                    app:tint="#FFFFFF" />
             </LinearLayout>
-            <LinearLayout
-                android:id="@+id/layout_text_panel"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#1A1A1A"
-                android:orientation="vertical"
-                android:padding="16dp"
-                android:visibility="gone">
-                <EditText
-                    android:id="@+id/et_custom_text"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/hint_text"
-                    android:textColor="#FFFFFF"
-                    android:textColorHint="#666666"
-                    android:backgroundTint="#444444" />
-                <Button
-                    android:id="@+id/btn_send_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/send"
-                    app:backgroundTint="@color/orange_btn" />
-            </LinearLayout>
-
-        </LinearLayout>
     </ScrollView>
 
     <!-- Boutons sociaux en bas -->
