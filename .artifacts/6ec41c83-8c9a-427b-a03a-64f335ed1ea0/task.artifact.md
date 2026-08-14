@@ -1,0 +1,6 @@
+- `[x]` Renommer l'application dans les ressources (`strings.xml`)
+- `[x]` Renommer le projet dans la configuration Gradle (`settings.gradle.kts`)
+- `[x]` Mettre à jour l'identifiant technique (`applicationId`) et le `namespace`
+- `[x]` Renommer les thèmes (`Theme.ControlLedGears`)
+- `[x]` Mettre à jour les packages Kotlin vers `com.example.controlledgears`
+- `[x]` Synchroniser le projet Gradle et vérifier le build

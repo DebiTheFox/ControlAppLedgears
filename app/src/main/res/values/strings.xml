@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">Control LED &amp; Gears</string>
+    <string name="facebook">Facebook</string>
+    <string name="instagram">Instagram</string>
+    <string name="youtube">YouTube</string>
+    <string name="tiktok">TikTok</string>
+    <string name="activate_bluetooth">Activer Bluetooth</string>
+    <string name="deactivate_bluetooth">Désactiver Bluetooth</string>
+    <string name="connect_esp32">Rechercher connexion ESP32</string>
+    <string name="disconnect_esp32">Déconnexion ESP32 %s</string>
+    <string name="connecting">Connexion à %s…</string>
+    <string name="connection_failed">Échec de la connexion</string>
+    <string name="device_not_paired">L\'appareil ESP32 n\'est pas appairé</string>
+    <string name="bluetooth_not_supported">Le Bluetooth n\'est pas supporté sur cet appareil</string>
+    <string name="logo">Logo</string>
+    <string name="permission_denied">Permission Bluetooth refusée</string>
+    <string name="custom_rainbow">Custom Rainbow</string>
+    <string name="brightness">Luminosité</string>
+    <string name="white_channel">Canal Blanc</string>
+    <string name="searching">Recherche en cours…</string>
+    <string name="no_device_found">Aucun appareil \"%s\" trouvé</string>
+    <string name="select_esp32">Sélectionner l\'ESP32</string>
+    <string name="cancel">Annuler</string>
+    <string name="custom_fade">Custom Fade</string>
+    <string name="custom_fire_breath">Custom Fire Breath</string>
+    <string name="custom_text">Custom Text</string>
+    <string name="send">Envoyer</string>
+    <string name="hint_text">Entrez votre texte ici…</string>
+    <string name="fade_description">Réglages pour l\'effet de fondu.</string>
+    <string name="fire_description">Réglages pour l\'effet souffle de feu.</string>
+</resources>

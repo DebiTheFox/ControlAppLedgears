@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="#171717">
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_facebook"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/iv_logo"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center_horizontal"
+                app:srcCompat="@drawable/logo"
+                android:contentDescription="@string/logo" />
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:text="@string/app_name"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btn_bluetooth"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="16dp"
+                app:backgroundTint="@color/orange_btn"
+                app:cornerRadius="25dp"
+                android:text="@string/activate_bluetooth"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <!-- Section Custom Rainbow -->
+            <LinearLayout
+                android:id="@+id/layout_rainbow_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="#222222"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/custom_rainbow"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:id="@+id/iv_rainbow_arrow"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@android:drawable/arrow_down_float"
+                    android:contentDescription="@null"
+                    app:tint="#FFFFFF" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_rainbow_panel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#1A1A1A"
+                android:orientation="vertical"
+                android:padding="12dp"
+                android:visibility="gone">
+
+                <com.skydoves.colorpickerview.ColorPickerView
+                    android:id="@+id/color_picker"
+                    android:layout_width="150dp"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="16dp"
+                    app:palette="@drawable/color_circle_rgb" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/brightness"
+                    android:textColor="#BBBBBB" />
+
+                <SeekBar
+                    android:id="@+id/seek_brightness"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Boutons sociaux à droite en paysage -->
+    <ImageButton
+        android:id="@+id/btn_tiktok"
+        style="@style/SocialButton"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="@string/tiktok"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/tic" />
+
+    <ImageButton
+        android:id="@+id/btn_youtube"
+        style="@style/SocialButton"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@string/youtube"
+        app:layout_constraintBottom_toTopOf="@+id/btn_tiktok"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/youtube" />
+
+    <ImageButton
+        android:id="@+id/btn_instagram"
+        style="@style/SocialButton"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@string/instagram"
+        app:layout_constraintBottom_toTopOf="@+id/btn_youtube"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/instagram" />
+
+    <ImageButton
+        android:id="@+id/btn_facebook"
+        style="@style/SocialButton"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@string/facebook"
+        app:layout_constraintBottom_toTopOf="@+id/btn_instagram"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/facebook" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
