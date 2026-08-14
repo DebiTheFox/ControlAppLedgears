@@ -1,6 +1,7 @@
 package com.example.controlledgears
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
@@ -13,6 +14,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.ListView
@@ -131,6 +133,7 @@ class MainActivity : AppCompatActivity() {
 
         updateBluetoothButtonState()
         checkForUpdates()
+        showChangelogIfNeeded()
         binding.btnBluetooth.setOnClickListener {
             checkPermissionsAndHandleBluetooth()
         }
@@ -263,7 +266,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setupColorPicker() {
+        binding.colorPicker?.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
+                    v.parent.requestDisallowInterceptTouchEvent(true)
+                }
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                    v.parent.requestDisallowInterceptTouchEvent(false)
+                }
+            }
+            false
+        }
+
         binding.colorPicker?.setColorListener(ColorListener { _, fromUser ->
             if (fromUser) {
                 // Envoyer la couleur à l'ESP32 plus tard
@@ -496,5 +512,42 @@ class MainActivity : AppCompatActivity() {
     private fun openUrl(url: String) {
         val intent = Intent(Intent.ACTION_VIEW, url.toUri())
         startActivity(intent)
+    }
+
+    private fun showChangelogIfNeeded() {
+        val prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
+        val lastShownVersion = prefs.getInt("last_changelog_version", 0)
+        
+        val currentVersion = try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                packageManager.getPackageInfo(packageName, 0).longVersionCode.toInt()
+            } else {
+                @Suppress("DEPRECATION")
+                packageManager.getPackageInfo(packageName, 0).versionCode
+            }
+        } catch (_: Exception) { 0 }
+
+        if (currentVersion > lastShownVersion) {
+            val changelog = """
+                🚀 What's New in Version 1.0.0:
+                
+                • Smart Bluetooth Scan: Filters only "ControlAppLedgears" devices.
+                • Dynamic UI: WiFi-style scanning interface.
+                • Animated Panels: New sections for Rainbow, Fade, and Fire Breath.
+                • Auto-Updates: The app now checks GitHub for new versions automatically.
+                • Web Controller: iOS/Universal access via our web dashboard.
+                
+                Enjoy the new features!
+            """.trimIndent()
+
+            AlertDialog.Builder(this)
+                .setTitle("Changelog")
+                .setMessage(changelog)
+                .setPositiveButton("Awesome!", null)
+                .setCancelable(true)
+                .show()
+
+            prefs.edit().putInt("last_changelog_version", currentVersion).apply()
+        }
     }
 }
