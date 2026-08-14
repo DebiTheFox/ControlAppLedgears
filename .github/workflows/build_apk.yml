@@ -41,5 +41,11 @@ jobs:
           artifacts: "app/build/outputs/apk/debug/app-debug.apk"
           tag: "v${{ github.run_number }}"
           name: "Release v${{ github.run_number }}"
-          body: "Build automatique de l'APK.\nCommit: ${{ github.sha }}"
+          generateReleaseNotes: true
+          body: |
+            ## 🚀 Changes in this version
+            - Automatic build and deployment
+            - Version v${{ github.run_number }}
+            
+            *Full changelog available below.*
           token: ${{ secrets.GITHUB_TOKEN }}
