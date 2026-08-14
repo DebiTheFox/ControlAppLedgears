@@ -42,10 +42,6 @@ jobs:
           tag: "v${{ github.run_number }}"
           name: "Release v${{ github.run_number }}"
           generateReleaseNotes: true
-          body: |
-            ## 🚀 Changes in this version
-            - Automatic build and deployment
-            - Version v${{ github.run_number }}
-            
-            *Full changelog available below.*
+          makeLatest: true
+          bodyFile: "RELEASE_NOTES.md"
           token: ${{ secrets.GITHUB_TOKEN }}
