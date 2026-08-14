@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # 📱 Control LED & Gears
 
 Project to control LED strips via ESP32 using Bluetooth.
