@@ -22,12 +22,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
+import androidx.core.content.IntentCompat
 import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.IntentCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.transition.TransitionManager
 import com.example.controlledgears.databinding.ActivityMainBinding
@@ -35,6 +36,11 @@ import com.skydoves.colorpickerview.listeners.ColorListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import org.json.JSONObject
+import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
 import java.util.UUID
 
@@ -124,6 +130,7 @@ class MainActivity : AppCompatActivity() {
         setupTextSection()
 
         updateBluetoothButtonState()
+        checkForUpdates()
         binding.btnBluetooth.setOnClickListener {
             checkPermissionsAndHandleBluetooth()
         }
@@ -153,6 +160,91 @@ class MainActivity : AppCompatActivity() {
                 binding.etCustomText?.text?.clear()
             }
         }
+    }
+
+    private fun checkForUpdates() {
+        val githubUser = "DebiTheFox"
+        val githubRepo = "ControlAppLedgears"
+        val apiUrl = "https://api.github.com/repos/$githubUser/$githubRepo/releases/latest"
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val client = OkHttpClient()
+                val request = Request.Builder().url(apiUrl).build()
+                val response = client.newCall(request).execute()
+                val jsonData = response.body?.string()
+
+                if (jsonData != null) {
+                    val jsonObject = JSONObject(jsonData)
+                    val latestVersion = jsonObject.getString("tag_name") // ex: "v15"
+                    val downloadUrl = jsonObject.getJSONArray("assets")
+                        .getJSONObject(0)
+                        .getString("browser_download_url")
+
+                    // Extraire le numéro de version (ex: "v15" -> 15)
+                    val latestVersionCode = latestVersion.replace(Regex("[^0-9]"), "").toIntOrNull() ?: 0
+                    val currentVersionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        packageManager.getPackageInfo(packageName, 0).longVersionCode.toInt()
+                    } else {
+                        packageManager.getPackageInfo(packageName, 0).versionCode
+                    }
+
+                    if (latestVersionCode > currentVersionCode) {
+                        withContext(Dispatchers.Main) {
+                            showUpdateDialog(latestVersion, downloadUrl)
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun showUpdateDialog(versionName: String, downloadUrl: String) {
+        AlertDialog.Builder(this)
+            .setTitle("Mise à jour disponible")
+            .setMessage("Une nouvelle version ($versionName) est disponible sur GitHub. Voulez-vous la télécharger et l'installer ?")
+            .setPositiveButton("Mettre à jour") { _, _ ->
+                downloadAndInstallApk(downloadUrl)
+            }
+            .setNegativeButton("Plus tard", null)
+            .show()
+    }
+
+    private fun downloadAndInstallApk(url: String) {
+        Toast.makeText(this, "Téléchargement de la mise à jour...", Toast.LENGTH_LONG).show()
+        
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                val client = OkHttpClient()
+                val request = Request.Builder().url(url).build()
+                val response = client.newCall(request).execute()
+                
+                val apkFile = File(getExternalFilesDir(null), "update.apk")
+                val fos = FileOutputStream(apkFile)
+                fos.write(response.body?.bytes())
+                fos.close()
+
+                withContext(Dispatchers.Main) {
+                    installApk(apkFile)
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@MainActivity, "Erreur lors du téléchargement", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    private fun installApk(file: File) {
+        val uri = FileProvider.getUriForFile(this, "$packageName.fileprovider", file)
+        val intent = Intent(Intent.ACTION_VIEW).apply {
+            setDataAndType(uri, "application/vnd.android.package-archive")
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
+        startActivity(intent)
     }
 
     private fun sendBluetoothData(data: String) {
