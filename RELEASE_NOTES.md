@@ -7,6 +7,7 @@ Welcome to the first official release of **ControlAppLedgears**! This version es
 ### 🛡️ Secure & Smart Connectivity
 - **Intelligent Filtering**: No more scrolling through dozens of Bluetooth devices. The app strictly filters and only shows your "ControlAppLedgears" hardware.
 - **Real-Time Discovery**: A clean, interactive scanning window that updates instantly as your devices are found.
+- **Universal Web Controller**: Introducing our Web interface for iPhone and PC users. [Open it here!](https://DebiTheFox.github.io/ControlAppLedgears/web/)
 
 ### 🎮 Fully Modular Control Interface
 - **Animated Control Panels**: Dedicated sections for **Rainbow**, **Fade**, and **Fire Breath** animations.
@@ -16,12 +17,8 @@ Welcome to the first official release of **ControlAppLedgears**! This version es
 ### 🔄 Automatic Updates (OTA)
 - **Built-in Update System**: The app automatically checks for new versions on GitHub. You'll be notified as soon as a new update is ready to install!
 
-### 🛠️ Professional Infrastructure
-- **CI/CD Pipeline**: Every build is automatically compiled and verified via GitHub Actions.
-- **Standardized Releases**: All APKs are now signed and published directly to the GitHub Release page.
-
 ---
 > [!TIP]
-> Make sure your ESP32 is running the latest firmware compatible with the "ControlAppLedgears" naming convention to ensure a perfect connection.
+> **iPhone users:** Safari does not support Bluetooth. Please use the **Blueify** browser to access the Web Controller.
 
 Enjoy the light! 🦊✨

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Control LED & Gears - Web</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@jaames/iro@5"></script>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <img src="../app/src/main/res/drawable/logo.png" alt="Logo" class="logo" onerror="this.src='https://raw.githubusercontent.com/DebiTheFox/ControlAppLedgears/main/app/src/main/res/drawable/logo.png'">
+            <h1>Control LED & Gears</h1>
+        </header>
+
+        <main>
+            <button id="btn-connect" class="primary-btn">RECHERCHER CONNEXION ESP32</button>
+            <p id="status" class="status-text">Déconnecté</p>
+
+            <section class="expandable">
+                <div class="expand-header" data-target="rainbow-panel">
+                    <span>Custom Rainbow</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div id="rainbow-panel" class="expand-panel">
+                    <div id="color-picker-container"></div>
+
+                    <div class="slider-group">
+                        <label>Luminosité</label>
+                        <input type="range" id="brightness" min="0" max="255" value="128">
+                    </div>
+
+                    <div class="slider-group">
+                        <label>Canal Blanc</label>
+                        <input type="range" id="white-channel" min="0" max="255" value="0">
+                    </div>
+                </div>
+            </section>
+
+            <section class="expandable">
+                <div class="expand-header" data-target="fade-panel">
+                    <span>Custom Fade</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div id="fade-panel" class="expand-panel">
+                    <p class="description">Réglages pour l'effet de fondu.</p>
+                </div>
+            </section>
+
+            <section class="expandable">
+                <div class="expand-header" data-target="fire-panel">
+                    <span>Custom Fire Breath</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div id="fire-panel" class="expand-panel">
+                    <p class="description">Réglages pour l'effet souffle de feu.</p>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="social-icons">
+                <a href="https://www.facebook.com/foxfursmythiccreati0ns" target="_blank">FB</a>
+                <a href="https://www.instagram.com/foxfursmythiccreations/" target="_blank">IG</a>
+                <a href="https://www.youtube.com/@FoxFursMythicCreations" target="_blank">YT</a>
+                <a href="https://www.tiktok.com/@foxfursmythiccreations" target="_blank">TK</a>
+            </div>
+        </footer>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
