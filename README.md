@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 📱 Control LED & Gears
 
 Project to control LED strips via ESP32 using Bluetooth.
@@ -17,3 +18,6 @@ Download the latest official APK from the **[Releases](https://github.com/DebiTh
 - **Dynamic UI**: Wifi-style scanning interface.
 - **Custom Animations**: Modular panels for Rainbow, Fade, and Fire Breath.
 - **Auto-Updates**: The app checks for new versions on GitHub automatically.
+=======
+# ControlAppLedgears
+>>>>>>> b5bacd172f943ca66ac5da90f03ec4189601f0fa
