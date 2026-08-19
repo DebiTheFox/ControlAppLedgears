@@ -1,28 +1,39 @@
-# Ajout de boutons d'action pour les effets LED
+# Automatisation des versions et du Changelog via GitHub
 
-L'objectif est d'ajouter des boutons "Lancer" dans chaque section extensible (Rainbow, Fade, Fire Breath) pour envoyer la commande correspondante à l'ESP32.
+L'objectif est de supprimer le code "en dur" lié aux versions et aux changelogs pour que tout soit géré via les "Releases" sur GitHub.
+
+## User Review Required
+
+> [!IMPORTANT]
+> - Dorénavant, pour publier une mise à jour, il vous suffira de créer une **Release** sur GitHub avec une description. L'application récupérera automatiquement ce texte pour l'afficher aux utilisateurs.
+> - Vous n'aurez plus besoin de modifier `MainActivity.kt` pour chaque nouvelle version.
 
 ## Proposed Changes
-
-### [Resources](file:///C:/Users/DebiTheFox.DESKTOP-G9J6UVR/AndroidStudioProjects/app/src/main/res/)
-
-#### [MODIFY] [strings.xml](file:///C:/Users/DebiTheFox.DESKTOP-G9J6UVR/AndroidStudioProjects/app/src/main/res/values/strings.xml)
-- Ajouter une chaîne `launch` ("Lancer").
-
-#### [MODIFY] [activity_main.xml](file:///C:/Users/DebiTheFox.DESKTOP-G9J6UVR/AndroidStudioProjects/app/src/main/res/layout/activity_main.xml)
-- Ajouter un bouton `btn_start_rainbow` dans `layout_rainbow_panel`.
-- Ajouter un bouton `btn_start_fade` dans `layout_fade_panel`.
-- Ajouter un bouton `btn_start_fire` dans `layout_fire_panel`.
 
 ### [MainActivity](file:///C:/Users/DebiTheFox.DESKTOP-G9J6UVR/AndroidStudioProjects/app/src/main/java/com/example/controlledgears/MainActivity.kt)
 
 #### [MODIFY] [MainActivity.kt](file:///C:/Users/DebiTheFox.DESKTOP-G9J6UVR/AndroidStudioProjects/app/src/main/java/com/example/controlledgears/MainActivity.kt)
-- Configurer les `OnClickListener` pour ces nouveaux boutons.
-- Envoyer les commandes textuelles ("RAINBOW", "FADE", "FIRE") via Bluetooth.
+- **`checkForUpdates()`** : Extraction du champ `"body"` (notes de version) et `"name"` (titre) de l'API GitHub.
+- **`showUpdateDialog()`** : Mise à jour de la signature pour accepter et afficher ces notes dynamiques.
+- **`showChangelogIfNeeded()`** : Suppression ou simplification, car les notes seront affichées lors de la proposition de mise à jour.
+
+### [Build Configuration](file:///C:/Users/DebiTheFox.DESKTOP-G9J6UVR/AndroidStudioProjects/app/build.gradle.kts)
+
+#### [MODIFY] [build.gradle.kts](file:///C:/Users/DebiTheFox.DESKTOP-G9J6UVR/AndroidStudioProjects/app/build.gradle.kts)
+- Augmentation de `versionCode` et `versionName` pour préparer la prochaine étape réelle.
+
+## Flux de travail recommandé (GitHub)
+
+1.  Faites vos modifications de code normalement et faites un `push`.
+2.  Quand vous estimez que c'est une "mise à jour importante" :
+    *   Allez sur GitHub > **Releases** > **Create a new release**.
+    *   Choisissez un tag (ex: `v2`, `v3`).
+    *   Écrivez vos nouveautés dans la description.
+    *   Attachez le nouveau fichier APK.
+3.  L'application détectera automatiquement le changement et affichera **votre** texte.
 
 ## Verification Plan
 
 ### Manual Verification
-1. Se connecter à l'ESP32.
-2. Ouvrir la section "Custom Rainbow" et cliquer sur "Lancer". Vérifier que l'effet s'active sur les LED.
-3. Répéter pour "Custom Fade" et "Custom Fire Breath".
+1. Lancer l'application. Elle appelle l'API GitHub.
+2. Vérifier que si une version supérieure existe sur GitHub, la boîte de dialogue affiche bien la description saisie sur le site GitHub au lieu du texte par défaut.

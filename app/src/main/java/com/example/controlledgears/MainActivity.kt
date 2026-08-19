@@ -138,7 +138,6 @@ class MainActivity : AppCompatActivity() {
 
         updateBluetoothButtonState()
         checkForUpdates()
-        showChangelogIfNeeded()
         binding.btnBluetooth.setOnClickListener {
             checkPermissionsAndHandleBluetooth()
         }
@@ -196,22 +195,26 @@ class MainActivity : AppCompatActivity() {
 
                 if (jsonData != null) {
                     val jsonObject = JSONObject(jsonData)
-                    val latestVersion = jsonObject.getString("tag_name") // ex: "v15"
-                    val downloadUrl = jsonObject.getJSONArray("assets")
-                        .getJSONObject(0)
-                        .getString("browser_download_url")
+                    val latestVersion = jsonObject.getString("tag_name")
+                    val releaseNotes = jsonObject.optString("body", "Aucune note de version fournie.")
+                    val releaseTitle = jsonObject.optString("name", latestVersion)
+                    
+                    val assets = jsonObject.getJSONArray("assets")
+                    if (assets.length() > 0) {
+                        val downloadUrl = assets.getJSONObject(0).getString("browser_download_url")
 
-                    // Extraire le numéro de version (ex: "v15" -> 15)
-                    val latestVersionCode = latestVersion.replace(Regex("[^0-9]"), "").toIntOrNull() ?: 0
-                    val currentVersionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                        packageManager.getPackageInfo(packageName, 0).longVersionCode.toInt()
-                    } else {
-                        packageManager.getPackageInfo(packageName, 0).versionCode
-                    }
+                        val latestVersionCode = latestVersion.replace(Regex("[^0-9]"), "").toIntOrNull() ?: 0
+                        val currentVersionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                            packageManager.getPackageInfo(packageName, 0).longVersionCode.toInt()
+                        } else {
+                            @Suppress("DEPRECATION")
+                            packageManager.getPackageInfo(packageName, 0).versionCode
+                        }
 
-                    if (latestVersionCode > currentVersionCode) {
-                        withContext(Dispatchers.Main) {
-                            showUpdateDialog(latestVersion, downloadUrl)
+                        if (latestVersionCode > currentVersionCode) {
+                            withContext(Dispatchers.Main) {
+                                showUpdateDialog(releaseTitle, releaseNotes, downloadUrl)
+                            }
                         }
                     }
                 }
@@ -221,10 +224,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showUpdateDialog(versionName: String, downloadUrl: String) {
+    private fun showUpdateDialog(title: String, notes: String, downloadUrl: String) {
         AlertDialog.Builder(this)
-            .setTitle("Mise à jour disponible")
-            .setMessage("Une nouvelle version ($versionName) est disponible sur GitHub. Voulez-vous la télécharger et l'installer ?")
+            .setTitle("Mise à jour : $title")
+            .setMessage("Nouveautés :\n\n$notes\n\nVoulez-vous télécharger et installer cette mise à jour ?")
             .setPositiveButton("Mettre à jour") { _, _ ->
                 downloadAndInstallApk(downloadUrl)
             }
@@ -587,42 +590,5 @@ class MainActivity : AppCompatActivity() {
     private fun openUrl(url: String) {
         val intent = Intent(Intent.ACTION_VIEW, url.toUri())
         startActivity(intent)
-    }
-
-    private fun showChangelogIfNeeded() {
-        val prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
-        val lastShownVersion = prefs.getInt("last_changelog_version", 0)
-        
-        val currentVersion = try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                packageManager.getPackageInfo(packageName, 0).longVersionCode.toInt()
-            } else {
-                @Suppress("DEPRECATION")
-                packageManager.getPackageInfo(packageName, 0).versionCode
-            }
-        } catch (_: Exception) { 0 }
-
-        if (currentVersion > lastShownVersion) {
-            val changelog = """
-                🚀 What's New in Version 1.0.0:
-                
-                • Smart Bluetooth Scan: Filters only "ControlAppLedgears" devices.
-                • Dynamic UI: WiFi-style scanning interface.
-                • Animated Panels: New sections for Rainbow, Fade, and Fire Breath.
-                • Auto-Updates: The app now checks GitHub for new versions automatically.
-                • Web Controller: iOS/Universal access via our web dashboard.
-                
-                Enjoy the new features!
-            """.trimIndent()
-
-            AlertDialog.Builder(this)
-                .setTitle("Changelog")
-                .setMessage(changelog)
-                .setPositiveButton("Awesome!", null)
-                .setCancelable(true)
-                .show()
-
-            prefs.edit().putInt("last_changelog_version", currentVersion).apply()
-        }
     }
 }
