@@ -124,6 +124,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
+                <Button
+                    android:id="@+id/btn_start_rainbow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/launch"
+                    app:backgroundTint="@color/orange_btn" />
+
             </LinearLayout>
 
             <!-- Section Custom Fade -->
@@ -166,6 +175,14 @@
                     android:layout_height="wrap_content"
                     android:text="@string/fade_description"
                     android:textColor="#BBBBBB" />
+                <Button
+                    android:id="@+id/btn_start_fade"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/launch"
+                    app:backgroundTint="@color/orange_btn" />
             </LinearLayout>
 
             <!-- Section Custom Fire Breath -->
@@ -208,6 +225,14 @@
                     android:layout_height="wrap_content"
                     android:text="@string/fire_description"
                     android:textColor="#BBBBBB" />
+                <Button
+                    android:id="@+id/btn_start_fire"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/launch"
+                    app:backgroundTint="@color/orange_btn" />
             </LinearLayout>
 
             <!-- Section Custom Text -->

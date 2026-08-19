@@ -17,6 +17,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import android.widget.ListView
 import android.widget.ProgressBar
 import android.widget.Toast
@@ -36,6 +37,8 @@ import androidx.transition.TransitionManager
 import com.example.controlledgears.databinding.ActivityMainBinding
 import com.skydoves.colorpickerview.listeners.ColorListener
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -52,12 +55,13 @@ class MainActivity : AppCompatActivity() {
     private var bluetoothSocket: BluetoothSocket? = null
     private var connectedDeviceName: String? = null
     private val sppUuid: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
-    private val deviceFilter = "ControlAppLedgears"
+    private val deviceFilter = "ControlLED&Gears"
 
     private val discoveredDevices = mutableSetOf<BluetoothDevice>()
     private var deviceAdapter: ArrayAdapter<String>? = null
     private var deviceDialog: AlertDialog? = null
     private var progressBar: ProgressBar? = null
+    private var scanTimeoutJob: Job? = null
 
     private val bluetoothAdapter: BluetoothAdapter? by lazy {
         val bluetoothManager = getSystemService(BLUETOOTH_SERVICE) as BluetoothManager
@@ -82,7 +86,7 @@ class MainActivity : AppCompatActivity() {
                             val name = it.name
                             if (name != null && name.contains(deviceFilter, ignoreCase = true)) {
                                 if (discoveredDevices.add(it)) {
-                                    deviceAdapter?.add(name)
+                                    deviceAdapter?.add(getCustomDeviceName(it))
                                 }
                             }
                         } catch (_: SecurityException) {}
@@ -130,6 +134,7 @@ class MainActivity : AppCompatActivity() {
 
         setupColorPicker()
         setupTextSection()
+        setupEffectButtons()
 
         updateBluetoothButtonState()
         checkForUpdates()
@@ -162,6 +167,18 @@ class MainActivity : AppCompatActivity() {
                 sendBluetoothData(text)
                 binding.etCustomText?.text?.clear()
             }
+        }
+    }
+
+    private fun setupEffectButtons() {
+        binding.btnStartRainbow?.setOnClickListener {
+            sendBluetoothData("RAINBOW")
+        }
+        binding.btnStartFade?.setOnClickListener {
+            sendBluetoothData("FADE")
+        }
+        binding.btnStartFire?.setOnClickListener {
+            sendBluetoothData("FIRE")
         }
     }
 
@@ -361,10 +378,24 @@ class MainActivity : AppCompatActivity() {
     private fun connectToESP32() {
         discoveredDevices.clear()
         
+        // Annuler le timeout précédent s'il existe
+        scanTimeoutJob?.cancel()
+        
+        // Démarrer le timeout de 1 minute
+        scanTimeoutJob = lifecycleScope.launch {
+            delay(60000) // 1 minute
+            if (discoveredDevices.isEmpty() && deviceDialog?.isShowing == true) {
+                deviceDialog?.dismiss()
+                Toast.makeText(this@MainActivity, getString(R.string.timeout_no_device), Toast.LENGTH_LONG).show()
+                updateBluetoothButtonState()
+            }
+        }
+
         // Ajouter d'abord les appareils déjà appairés qui correspondent au filtre
         try {
             bluetoothAdapter?.bondedDevices?.forEach { device ->
-                if (device.name?.contains(deviceFilter, ignoreCase = true) == true) {
+                val name = device.name
+                if (name != null && name.contains(deviceFilter, ignoreCase = true)) {
                     discoveredDevices.add(device)
                 }
             }
@@ -405,17 +436,14 @@ class MainActivity : AppCompatActivity() {
 
         // Peupler avec les appareils déjà trouvés (appairés ou du scan précédent)
         discoveredDevices.forEach { device ->
-            try {
-                deviceAdapter?.add(device.name ?: device.address)
-            } catch (_: SecurityException) {
-                deviceAdapter?.add(device.address)
-            }
+            deviceAdapter?.add(getCustomDeviceName(device))
         }
 
         deviceDialog = AlertDialog.Builder(this)
             .setView(dialogView)
             .setCancelable(true)
             .setOnDismissListener {
+                scanTimeoutJob?.cancel()
                 try {
                     if (bluetoothAdapter?.isDiscovering == true) {
                         bluetoothAdapter?.cancelDiscovery()
@@ -439,8 +467,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun performConnection(device: BluetoothDevice) {
-        val deviceName = try { device.name ?: "ESP32" } catch (_: SecurityException) { "ESP32" }
-        binding.btnBluetooth.text = getString(R.string.connecting, deviceName)
+        val prefs = getSharedPreferences("device_names", MODE_PRIVATE)
+        if (!prefs.contains(device.address)) {
+            showNamingDialog { customName ->
+                saveCustomDeviceName(device, customName)
+                actuallyConnect(device)
+            }
+        } else {
+            actuallyConnect(device)
+        }
+    }
+
+    private fun actuallyConnect(device: BluetoothDevice) {
+        val displayName = getCustomDeviceName(device)
+        binding.btnBluetooth.text = getString(R.string.connecting, displayName)
         binding.btnBluetooth.isEnabled = false
 
         lifecycleScope.launch {
@@ -454,7 +494,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     
                     bluetoothSocket?.connect()
-                    connectedDeviceName = deviceName
+                    connectedDeviceName = displayName
                     true
                 } catch (e: IOException) {
                     try {
@@ -486,6 +526,41 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Erreur lors de la déconnexion", Toast.LENGTH_SHORT).show()
         }
         updateBluetoothButtonState()
+    }
+
+    private fun showNamingDialog(onNameSet: (String) -> Unit) {
+        val editText = EditText(this)
+        editText.hint = getString(R.string.device_naming_hint)
+        
+        AlertDialog.Builder(this)
+            .setTitle(getString(R.string.device_naming_title))
+            .setView(editText)
+            .setPositiveButton(getString(R.string.ok)) { _, _ ->
+                val name = editText.text.toString()
+                if (name.isNotEmpty()) {
+                    onNameSet(name)
+                } else {
+                    onNameSet("Inconnu")
+                }
+            }
+            .setCancelable(false)
+            .show()
+    }
+
+    private fun saveCustomDeviceName(device: BluetoothDevice, name: String) {
+        val prefs = getSharedPreferences("device_names", MODE_PRIVATE)
+        prefs.edit().putString(device.address, name).apply()
+    }
+
+    private fun getCustomDeviceName(device: BluetoothDevice): String {
+        val baseName = try { device.name ?: "ESP32" } catch (_: SecurityException) { "ESP32" }
+        val prefs = getSharedPreferences("device_names", MODE_PRIVATE)
+        val customName = prefs.getString(device.address, null)
+        return if (customName != null) {
+            getString(R.string.display_name_format, baseName, customName)
+        } else {
+            baseName
+        }
     }
 
     private fun setupWindowInsets() {

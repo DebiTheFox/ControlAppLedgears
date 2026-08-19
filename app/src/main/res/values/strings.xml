@@ -10,6 +10,11 @@
     <string name="disconnect_esp32">Déconnexion ESP32 %s</string>
     <string name="connecting">Connexion à %s…</string>
     <string name="connection_failed">Échec de la connexion</string>
+    <string name="timeout_no_device">Aucun appareil trouvé après 1 minute.</string>
+    <string name="device_naming_title">Nommer l\'appareil</string>
+    <string name="device_naming_hint">Exemple: tralala</string>
+    <string name="ok">OK</string>
+    <string name="display_name_format">%1$s de %2$s</string>
     <string name="device_not_paired">L\'appareil ESP32 n\'est pas appairé</string>
     <string name="bluetooth_not_supported">Le Bluetooth n\'est pas supporté sur cet appareil</string>
     <string name="logo">Logo</string>
@@ -28,4 +33,5 @@
     <string name="hint_text">Entrez votre texte ici…</string>
     <string name="fade_description">Réglages pour l\'effet de fondu.</string>
     <string name="fire_description">Réglages pour l\'effet souffle de feu.</string>
+    <string name="launch">Lancer</string>
 </resources>
