@@ -74,27 +74,64 @@
                 android:text="@string/picker_type"
                 android:textColor="@color/orange_btn"
                 android:textStyle="bold"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="16dp"/>
 
+            <!-- Images de prévisualisation -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginBottom="8dp">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/modern_circle"
+                    android:scaleType="centerInside"
+                    android:contentDescription="@null"/>
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="120dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/hsv_square"
+                    android:scaleType="centerInside"
+                    android:contentDescription="@null"
+                    android:layout_marginStart="16dp"/>
+            </LinearLayout>
+
+            <!-- Boutons de sélection -->
             <RadioGroup
                 android:id="@+id/rg_picker_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:padding="8dp"
+                android:background="#1F1F1F">
+
                 <RadioButton
                     android:id="@+id/rb_picker_circle"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="@string/picker_circle"
                     android:textColor="#FFFFFF"
-                    android:buttonTint="@color/orange_btn"/>
+                    android:buttonTint="@color/orange_btn"
+                    android:textSize="12sp"/>
+
                 <RadioButton
                     android:id="@+id/rb_picker_hsv"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="@string/picker_hsv"
                     android:textColor="#FFFFFF"
-                    android:buttonTint="@color/orange_btn"/>
+                    android:buttonTint="@color/orange_btn"
+                    android:textSize="12sp"
+                    android:layout_marginStart="8dp"/>
             </RadioGroup>
 
             <View

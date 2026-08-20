@@ -92,19 +92,56 @@
                 android:padding="12dp"
                 android:visibility="gone">
 
-                <com.skydoves.colorpickerview.ColorPickerView
-                    android:id="@+id/color_picker"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="16dp"
-                    app:palette="@drawable/color_circle_rgb" />
+                <!-- Sélecteur Cercle RGB (Classique) -->
+                <LinearLayout
+                    android:id="@+id/layout_picker_circle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+                    <com.skydoves.colorpickerview.ColorPickerView
+                        android:id="@+id/color_picker"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        app:palette="@drawable/color_circle_rgb" />
+
+                    <com.skydoves.colorpickerview.ColorPickerView
+                        android:id="@+id/color_picker_rgb_lightness"
+                        android:layout_width="30dp"
+                        android:layout_height="120dp"
+                        android:layout_marginStart="8dp"
+                        app:palette="@drawable/rgb_lightness_bar" />
+                </LinearLayout>
+
+                <!-- Sélecteur Carré HSV (Moderne) -->
+                <LinearLayout
+                    android:id="@+id/layout_picker_hsv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:visibility="gone">
+
+                    <com.skydoves.colorpickerview.ColorPickerView
+                        android:id="@+id/color_picker_square"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        app:palette="@drawable/hsv_square_base" />
+
+                    <com.skydoves.colorpickerview.ColorPickerView
+                        android:id="@+id/color_picker_hue_bar"
+                        android:layout_width="30dp"
+                        android:layout_height="120dp"
+                        android:layout_marginStart="8dp"
+                        app:palette="@drawable/hsv_hue_bar" />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/brightness"
-                    android:textColor="#BBBBBB" />
+                    android:textColor="#BBBBBB"
+                    android:layout_marginTop="8dp"/>
 
                 <SeekBar
                     android:id="@+id/seek_brightness"

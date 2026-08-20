@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ListView
 import android.widget.ProgressBar
+import android.widget.SeekBar
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
@@ -135,6 +136,7 @@ class MainActivity : AppCompatActivity() {
         setupColorPicker()
         setupTextSection()
         setupEffectButtons()
+        setupBrightnessControl()
 
         updateBluetoothButtonState()
         checkForUpdates()
@@ -190,6 +192,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupBrightnessControl() {
+        binding.seekBrightness.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                if (fromUser) {
+                    sendBluetoothData("BRIGHTNESS:$progress", silent = true)
+                }
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+        })
+    }
+
     private fun setupEffectButtons() {
         binding.btnStartRainbow?.setOnClickListener {
             sendBluetoothData("RAINBOW")
@@ -220,6 +234,14 @@ class MainActivity : AppCompatActivity() {
                     val releaseNotes = jsonObject.optString("body", "Aucune note de version fournie.")
                     val releaseTitle = jsonObject.optString("name", latestVersion)
                     
+                    // Vérifier si l'utilisateur a déjà refusé cette version spécifique
+                    val prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
+                    val dismissedVersion = prefs.getString("dismissed_version", "")
+                    
+                    if (dismissedVersion == latestVersion) {
+                        return@launch // Ignorer si déjà refusée
+                    }
+
                     val assets = jsonObject.getJSONArray("assets")
                     if (assets.length() > 0) {
                         val downloadUrl = assets.getJSONObject(0).getString("browser_download_url")
@@ -234,7 +256,7 @@ class MainActivity : AppCompatActivity() {
 
                         if (latestVersionCode > currentVersionCode) {
                             withContext(Dispatchers.Main) {
-                                showUpdateDialog(releaseTitle, releaseNotes, downloadUrl)
+                                showUpdateDialog(releaseTitle, latestVersion, releaseNotes, downloadUrl)
                             }
                         }
                     }
@@ -245,14 +267,26 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showUpdateDialog(title: String, notes: String, downloadUrl: String) {
+    private fun showUpdateDialog(title: String, versionTag: String, notes: String, downloadUrl: String) {
         AlertDialog.Builder(this)
             .setTitle("Mise à jour : $title")
             .setMessage("Nouveautés :\n\n$notes\n\nVoulez-vous télécharger et installer cette mise à jour ?")
             .setPositiveButton("Mettre à jour") { _, _ ->
                 downloadAndInstallApk(downloadUrl)
             }
-            .setNegativeButton("Plus tard", null)
+            .setNegativeButton("Plus tard") { _, _ ->
+                // Mémoriser que l'utilisateur a cliqué sur "Plus tard" pour cette version
+                getSharedPreferences("app_prefs", MODE_PRIVATE).edit()
+                    .putString("dismissed_version", versionTag)
+                    .apply()
+            }
+            .setOnCancelListener {
+                // Mémoriser aussi si on clique en dehors de la popup
+                getSharedPreferences("app_prefs", MODE_PRIVATE).edit()
+                    .putString("dismissed_version", versionTag)
+                    .apply()
+            }
+            .setCancelable(true)
             .show()
     }
 
@@ -291,53 +325,77 @@ class MainActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun sendBluetoothData(data: String) {
+    private fun sendBluetoothData(data: String, silent: Boolean = false) {
         if (bluetoothSocket?.isConnected == true) {
             lifecycleScope.launch(Dispatchers.IO) {
                 try {
                     bluetoothSocket?.outputStream?.write((data + "\n").toByteArray())
                 } catch (e: IOException) {
-                    withContext(Dispatchers.Main) {
-                        Toast.makeText(this@MainActivity, "Erreur d'envoi", Toast.LENGTH_SHORT).show()
+                    if (!silent) {
+                        withContext(Dispatchers.Main) {
+                            Toast.makeText(this@MainActivity, "Erreur d'envoi", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
         } else {
-            Toast.makeText(this, "Non connecté à l'ESP32", Toast.LENGTH_SHORT).show()
+            if (!silent) {
+                Toast.makeText(this, "Non connecté à l'ESP32", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupColorPicker() {
-        // Sélecteur Cercle
-        binding.colorPicker?.setOnTouchListener { v, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> v.parent.requestDisallowInterceptTouchEvent(true)
-                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> v.parent.requestDisallowInterceptTouchEvent(false)
+        // --- SÉLECTEUR CERCLE RGB ---
+        
+        // 1. La barre de luminosité RGB
+        binding.colorPickerRgbLightness?.setOnTouchListener { v, event ->
+            v.parent.requestDisallowInterceptTouchEvent(true)
+            false
+        }
+        binding.colorPickerRgbLightness?.setColorListener(ColorListener { color, fromUser ->
+            val drawable = ContextCompat.getDrawable(this, R.drawable.color_circle_rgb)?.mutate()
+            drawable?.colorFilter = android.graphics.PorterDuffColorFilter(color, android.graphics.PorterDuff.Mode.MULTIPLY)
+            if (drawable != null) {
+                binding.colorPicker?.setPaletteDrawable(drawable)
             }
+        })
+
+        // 2. Le cercle RGB
+        binding.colorPicker?.setOnTouchListener { v, event ->
+            v.parent.requestDisallowInterceptTouchEvent(true)
             false
         }
         binding.colorPicker?.setColorListener(ColorListener { color, fromUser ->
             if (fromUser) {
-                sendBluetoothData(String.format("#%06X", 0xFFFFFF and color))
+                sendBluetoothData(String.format("#%06X", 0xFFFFFF and color), silent = true)
             }
         })
 
-        // Sélecteur HSV
-        binding.brightnessSlide?.let {
-            binding.colorPickerHsv?.attachBrightnessSlider(it)
-        }
+        // --- SÉLECTEUR HSV (CARRÉ + BARRE) ---
         
-        binding.colorPickerHsv?.setOnTouchListener { v, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> v.parent.requestDisallowInterceptTouchEvent(true)
-                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> v.parent.requestDisallowInterceptTouchEvent(false)
-            }
+        // 1. La barre de Teinte (Hue)
+        binding.colorPickerHueBar?.setOnTouchListener { v, event ->
+            v.parent.requestDisallowInterceptTouchEvent(true)
             false
         }
-        binding.colorPickerHsv?.setColorListener(ColorListener { color, fromUser ->
+        binding.colorPickerHueBar?.setColorListener(ColorListener { color, fromUser ->
+            val drawable = ContextCompat.getDrawable(this, R.drawable.hsv_square_base)?.mutate()
+            drawable?.colorFilter = android.graphics.PorterDuffColorFilter(color, android.graphics.PorterDuff.Mode.MULTIPLY)
+            if (drawable != null) {
+                binding.colorPickerSquare?.setPaletteDrawable(drawable)
+            }
+        })
+
+        // 2. Le Carré (Saturation / Valeur)
+        binding.colorPickerSquare?.setOnTouchListener { v, event ->
+            v.parent.requestDisallowInterceptTouchEvent(true)
+            false
+        }
+        binding.colorPickerSquare?.setColorListener(ColorListener { color, fromUser ->
             if (fromUser) {
-                sendBluetoothData(String.format("#%06X", 0xFFFFFF and color))
+                sendBluetoothData(String.format("#%06X", 0xFFFFFF and color), silent = true)
             }
         })
     }
