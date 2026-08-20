@@ -1,31 +1,34 @@
-# Walkthrough - Boutons d'action LED
+# Walkthrough - Création de SettingsActivity
 
-Les modifications suivantes ont été apportées pour permettre de lancer les effets LED directement depuis l'application :
+L'application a été structurée pour séparer les contrôles directs de la configuration.
 
 ## Changements effectués
 
-### 1. Nouveaux boutons "Lancer"
-- Des boutons **"Lancer"** ont été ajoutés dans les sections suivantes :
-    - **Custom Rainbow** : Envoie la commande `RAINBOW`.
-    - **Custom Fade** : Envoie la commande `FADE`.
-    - **Custom Fire Breath** : Envoie la commande `FIRE`.
-- Ces boutons sont situés en bas à droite de chaque panneau extensible.
+### 1. Nouvelle Activité : SettingsActivity
+- Une nouvelle page de réglages a été créée.
+- Elle est accessible via une icône ⚙️ ajoutée en haut à droite de l'écran principal.
+- **Fonctionnalités incluses** :
+    - **Maintenance** : Bouton pour vérifier manuellement les mises à jour sur GitHub.
+    - **Appareils enregistrés** : Liste tous les ESP32 auxquels vous avez donné un nom.
+    - **Gestion des noms** : Possibilité de supprimer un nom enregistré en cliquant sur l'appareil dans la liste.
 
-### 2. Ressources
-- Une nouvelle chaîne de caractères `launch` ("Lancer") a été ajoutée à `strings.xml`.
+### 2. Nettoyage de MainActivity
+- Ajout du bouton d'ouverture des réglages.
+- Allègement visuel du layout principal.
 
-### 3. Logique de communication
-- La méthode `setupEffectButtons()` dans `MainActivity.kt` gère les clics sur ces boutons et utilise `sendBluetoothData()` pour communiquer avec l'ESP32.
+### 3. Ressources et Système
+- Mise à jour du `AndroidManifest.xml` pour enregistrer la nouvelle activité.
+- Ajout de chaînes de caractères dans `strings.xml`.
+- Support des layouts Portrait et Paysage pour l'icône de réglages.
 
-## Fichiers modifiés
+## Fichiers créés/modifiés
 
-- [strings.xml](file:///C:/Users/DebiTheFox.DESKTOP-G9J6UVR/AndroidStudioProjects/app/src/main/res/values/strings.xml)
-- [activity_main.xml](file:///C:/Users/DebiTheFox.DESKTOP-G9J6UVR/AndroidStudioProjects/app/src/main/res/layout/activity_main.xml) (Portrait)
-- [activity_main.xml](file:///C:/Users/DebiTheFox.DESKTOP-G9J6UVR/AndroidStudioProjects/app/src/main/res/layout-land/activity_main.xml) (Paysage - Rainbow uniquement)
+- [AndroidManifest.xml](file:///C:/Users/DebiTheFox.DESKTOP-G9J6UVR/AndroidStudioProjects/app/src/main/AndroidManifest.xml)
 - [MainActivity.kt](file:///C:/Users/DebiTheFox.DESKTOP-G9J6UVR/AndroidStudioProjects/app/src/main/java/com/example/controlledgears/MainActivity.kt)
+- [activity_main.xml](file:///C:/Users/DebiTheFox.DESKTOP-G9J6UVR/AndroidStudioProjects/app/src/main/res/layout/activity_main.xml)
+- [SettingsActivity.kt](file:///C:/Users/DebiTheFox.DESKTOP-G9J6UVR/AndroidStudioProjects/app/src/main/java/com/example/controlledgears/SettingsActivity.kt)
+- [activity_settings.xml](file:///C:/Users/DebiTheFox.DESKTOP-G9J6UVR/AndroidStudioProjects/app/src/main/res/layout/activity_settings.xml)
+- [strings.xml](file:///C:/Users/DebiTheFox.DESKTOP-G9J6UVR/AndroidStudioProjects/app/src/main/res/values/strings.xml)
 
-## Vérification effectuée
-
-- ✅ Validation de la hiérarchie XML pour les nouveaux boutons.
-- ✅ Utilisation d'appels sécurisés (`?.`) dans le code Kotlin pour éviter les crashs si un bouton est absent d'une variante de layout.
-- ✅ Vérification de l'envoi des commandes via Bluetooth.
+## Note technique
+Les erreurs de référence à `ActivitySettingsBinding` dans l'éditeur sont normales tant qu'un nouveau build n'a pas été lancé pour générer la classe de binding correspondante au nouveau layout.

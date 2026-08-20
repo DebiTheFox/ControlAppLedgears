@@ -166,4 +166,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/facebook" />
 
+    <ImageButton
+        android:id="@+id/btn_open_settings"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="12dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/settings"
+        android:padding="6dp"
+        android:scaleType="fitCenter"
+        android:src="@android:drawable/ic_menu_preferences"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="#FFFFFF" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

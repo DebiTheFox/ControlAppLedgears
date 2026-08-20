@@ -26,8 +26,8 @@
                 android:layout_height="120dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="8dp"
-                app:srcCompat="@drawable/logo"
-                android:contentDescription="@string/logo" />
+                android:contentDescription="@string/logo"
+                app:srcCompat="@drawable/logo" />
 
             <TextView
                 android:id="@+id/tv_title"
@@ -45,13 +45,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginTop="24dp"
-                app:backgroundTint="@color/orange_btn"
-                app:cornerRadius="30dp"
                 android:text="@string/activate_bluetooth"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:backgroundTint="@color/orange_btn"
+                app:cornerRadius="30dp" />
 
             <!-- Section Custom Rainbow -->
             <LinearLayout
@@ -93,13 +93,42 @@
                 android:padding="16dp"
                 android:visibility="gone">
 
-                <com.skydoves.colorpickerview.ColorPickerView
-                    android:id="@+id/color_picker"
-                    android:layout_width="250dp"
-                    android:layout_height="250dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="24dp"
-                    app:palette="@drawable/color_circle_rgb" />
+                <!-- Sélecteur Cercle RGB (Classique) -->
+                <LinearLayout
+                    android:id="@+id/layout_picker_circle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal">
+                    <com.skydoves.colorpickerview.ColorPickerView
+                        android:id="@+id/color_picker"
+                        android:layout_width="250dp"
+                        android:layout_height="250dp"
+                        android:layout_marginBottom="24dp"
+                        app:palette="@drawable/color_circle_rgb" />
+                </LinearLayout>
+
+                <!-- Sélecteur Carré HSV (Moderne) -->
+                <LinearLayout
+                    android:id="@+id/layout_picker_hsv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:visibility="gone">
+
+                    <com.skydoves.colorpickerview.ColorPickerView
+                        android:id="@+id/color_picker_hsv"
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        app:palette="@drawable/color_circle_rgb" />
+
+                    <com.skydoves.colorpickerview.sliders.BrightnessSlideBar
+                        android:id="@+id/brightness_slide"
+                        android:layout_width="30dp"
+                        android:layout_height="200dp"
+                        android:layout_marginStart="16dp" />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -147,6 +176,7 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="12dp">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -155,6 +185,7 @@
                     android:textColor="#FFFFFF"
                     android:textSize="18sp"
                     android:textStyle="bold" />
+
                 <ImageView
                     android:id="@+id/iv_fade_arrow"
                     android:layout_width="24dp"
@@ -162,6 +193,7 @@
                     android:src="@android:drawable/arrow_down_float"
                     app:tint="#FFFFFF" />
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/layout_fade_panel"
                 android:layout_width="match_parent"
@@ -170,11 +202,13 @@
                 android:orientation="vertical"
                 android:padding="16dp"
                 android:visibility="gone">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/fade_description"
                     android:textColor="#BBBBBB" />
+
                 <Button
                     android:id="@+id/btn_start_fade"
                     android:layout_width="wrap_content"
@@ -197,6 +231,7 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="12dp">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -205,6 +240,7 @@
                     android:textColor="#FFFFFF"
                     android:textSize="18sp"
                     android:textStyle="bold" />
+
                 <ImageView
                     android:id="@+id/iv_fire_arrow"
                     android:layout_width="24dp"
@@ -212,6 +248,7 @@
                     android:src="@android:drawable/arrow_down_float"
                     app:tint="#FFFFFF" />
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/layout_fire_panel"
                 android:layout_width="match_parent"
@@ -220,11 +257,13 @@
                 android:orientation="vertical"
                 android:padding="16dp"
                 android:visibility="gone">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/fire_description"
                     android:textColor="#BBBBBB" />
+
                 <Button
                     android:id="@+id/btn_start_fire"
                     android:layout_width="wrap_content"
@@ -247,6 +286,7 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="12dp">
+
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -255,6 +295,7 @@
                     android:textColor="#FFFFFF"
                     android:textSize="18sp"
                     android:textStyle="bold" />
+
                 <ImageView
                     android:id="@+id/iv_text_arrow"
                     android:layout_width="24dp"
@@ -262,6 +303,7 @@
                     android:src="@android:drawable/arrow_down_float"
                     app:tint="#FFFFFF" />
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/layout_text_panel"
                 android:layout_width="match_parent"
@@ -270,14 +312,16 @@
                 android:orientation="vertical"
                 android:padding="16dp"
                 android:visibility="gone">
+
                 <EditText
                     android:id="@+id/et_custom_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="#444444"
                     android:hint="@string/hint_text"
                     android:textColor="#FFFFFF"
-                    android:textColorHint="#666666"
-                    android:backgroundTint="#444444" />
+                    android:textColorHint="#666666" />
+
                 <Button
                     android:id="@+id/btn_send_text"
                     android:layout_width="wrap_content"
@@ -330,5 +374,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_youtube"
         app:srcCompat="@drawable/tic" />
+
+    <ImageButton
+        android:id="@+id/btn_open_settings"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="16dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/settings"
+        android:padding="8dp"
+        android:scaleType="fitCenter"
+        android:src="@android:drawable/ic_menu_preferences"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="#FFFFFF" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

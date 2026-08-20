@@ -34,4 +34,13 @@
     <string name="fade_description">Réglages pour l\'effet de fondu.</string>
     <string name="fire_description">Réglages pour l\'effet souffle de feu.</string>
     <string name="launch">Lancer</string>
+    <string name="settings">Réglages</string>
+    <string name="check_updates">Vérifier les mises à jour</string>
+    <string name="saved_devices">Appareils enregistrés</string>
+    <string name="maintenance">Maintenance</string>
+    <string name="no_saved_devices">Aucun appareil enregistré.</string>
+    <string name="delete">Supprimer</string>
+    <string name="picker_type">Type de sélecteur de couleur</string>
+    <string name="picker_circle">Cercle RGB Classique</string>
+    <string name="picker_hsv">Carré HSV Moderne</string>
 </resources>

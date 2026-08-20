@@ -24,6 +24,10 @@
             android:name=".MainActivity"
             android:exported="true" />
         <activity
+            android:name=".SettingsActivity"
+            android:exported="false"
+            android:theme="@style/Theme.ControlLedGears" />
+        <activity
             android:name=".SplashScreenActivity"
             android:exported="true"
             android:theme="@style/Theme.App.Splash"

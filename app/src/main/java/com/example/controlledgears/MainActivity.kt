@@ -141,6 +141,27 @@ class MainActivity : AppCompatActivity() {
         binding.btnBluetooth.setOnClickListener {
             checkPermissionsAndHandleBluetooth()
         }
+        binding.btnOpenSettings?.setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updatePickerVisibility()
+    }
+
+    private fun updatePickerVisibility() {
+        val prefs = getSharedPreferences("app_prefs", MODE_PRIVATE)
+        val pickerType = prefs.getString("color_picker_type", "circle")
+
+        if (pickerType == "hsv") {
+            binding.layoutPickerCircle?.visibility = View.GONE
+            binding.layoutPickerHsv?.visibility = View.VISIBLE
+        } else {
+            binding.layoutPickerCircle?.visibility = View.VISIBLE
+            binding.layoutPickerHsv?.visibility = View.GONE
+        }
     }
 
     private fun setupExpandableSection(header: View?, panel: View?, arrow: View?) {
@@ -288,21 +309,35 @@ class MainActivity : AppCompatActivity() {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun setupColorPicker() {
+        // Sélecteur Cercle
         binding.colorPicker?.setOnTouchListener { v, event ->
             when (event.action) {
-                MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
-                    v.parent.requestDisallowInterceptTouchEvent(true)
-                }
-                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                    v.parent.requestDisallowInterceptTouchEvent(false)
-                }
+                MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> v.parent.requestDisallowInterceptTouchEvent(true)
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> v.parent.requestDisallowInterceptTouchEvent(false)
             }
             false
         }
-
-        binding.colorPicker?.setColorListener(ColorListener { _, fromUser ->
+        binding.colorPicker?.setColorListener(ColorListener { color, fromUser ->
             if (fromUser) {
-                // Envoyer la couleur à l'ESP32 plus tard
+                sendBluetoothData(String.format("#%06X", 0xFFFFFF and color))
+            }
+        })
+
+        // Sélecteur HSV
+        binding.brightnessSlide?.let {
+            binding.colorPickerHsv?.attachBrightnessSlider(it)
+        }
+        
+        binding.colorPickerHsv?.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> v.parent.requestDisallowInterceptTouchEvent(true)
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> v.parent.requestDisallowInterceptTouchEvent(false)
+            }
+            false
+        }
+        binding.colorPickerHsv?.setColorListener(ColorListener { color, fromUser ->
+            if (fromUser) {
+                sendBluetoothData(String.format("#%06X", 0xFFFFFF and color))
             }
         })
     }
