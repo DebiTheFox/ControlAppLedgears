@@ -46,9 +46,9 @@ btnConnect.addEventListener('click', async () => {
     try {
         statusText.innerText = "Recherche...";
 
-        // Filtre pour les appareils commençant par ControlAppLedgears
+        // Filtre pour les appareils commençant par ControlLED&Gears
         bluetoothDevice = await navigator.bluetooth.requestDevice({
-            filters: [{ namePrefix: 'ControlAppLedgears' }],
+            filters: [{ namePrefix: 'ControlLED&Gears' }],
             optionalServices: [UART_SERVICE_UUID]
         });
 
@@ -100,8 +100,4 @@ colorPicker.on('color:change', function(color) {
 
 document.getElementById('brightness').addEventListener('change', (e) => {
     sendData(`BRIGHT:${e.target.value}`);
-});
-
-document.getElementById('white-channel').addEventListener('change', (e) => {
-    sendData(`WHITE:${e.target.value}`);
 });

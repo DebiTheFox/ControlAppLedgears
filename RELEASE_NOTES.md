@@ -1,24 +1,27 @@
-# 🚀 Official Launch - Version 1.0.0
+# 🚀 Version v1.3.0 - Professional Control & Settings
 
-Welcome to the first official release of **ControlAppLedgears**! This version establishes the foundation for a powerful and secure ESP32 LED control experience.
+This major update transforms **Control LED & Gears** into a professional-grade controller for your ESP32 LED strips.
 
-## ✨ Key Highlights of V1.0.0
+## ✨ Key Highlights of V1.3.0
 
-### 🛡️ Secure & Smart Connectivity
-- **Intelligent Filtering**: No more scrolling through dozens of Bluetooth devices. The app strictly filters and only shows your "ControlAppLedgears" hardware.
-- **Real-Time Discovery**: A clean, interactive scanning window that updates instantly as your devices are found.
-- **Universal Web Controller**: Introducing our Web interface for iPhone and PC users. [Open it here!](https://DebiTheFox.github.io/ControlAppLedgears/web/)
+### ⚙️ New Settings Management
+- **Dedicated Settings Page**: Keep your main interface clean. Access advanced configuration via the ⚙️ icon.
+- **Custom Device Names**: View and manage (delete) your saved ESP32 devices directly from the settings.
+- **Modular Picker Selection**: Choose between the "Classic RGB Circle" or the "Modern HSV Square" directly in the settings.
 
-### 🎮 Fully Modular Control Interface
-- **Animated Control Panels**: Dedicated sections for **Rainbow**, **Fade**, and **Fire Breath** animations.
-- **Interactive Color Picker**: Precise RGB selection with brightness and white channel control.
-- **Direct Terminal**: Send custom text commands to your strip for debugging or custom patterns.
+### 🎨 Advanced Color Control
+- **Expert HSV Square**: Real-time Hue and Lightness bars with CSS-style dynamic transitions for pixel-perfect color selection.
+- **Precision RGB Control**: The classic circle now includes a dedicated vertical Lightness bar.
+- **Anti-Scroll Technology**: Scrolling is automatically disabled when interacting with color bars to prevent accidental page movements.
+- **UI Cleanup**: Removed obsolete controls like "White Channel" for a more focused experience.
 
-### 🔄 Automatic Updates (OTA)
-- **Built-in Update System**: The app automatically checks for new versions on GitHub. You'll be notified as soon as a new update is ready to install!
+### 🛡️ Smart Connectivity & Updates
+- **Intelligent Version Detection**: The app now intelligently compares local and remote versions. You only see the update popup when a real new version is available.
+- **Persistent User Choice**: If you dismiss an update, the app remembers and won't bug you again for that specific version.
+- **Silent Picking**: Removed "Not connected" popups while adjusting colors for a smoother, silent experience.
 
 ---
 > [!TIP]
 > **iPhone users:** Safari does not support Bluetooth. Please use the **Blueify** browser to access the Web Controller.
 
-Enjoy the light! 🦊✨
+Enjoy the new light! 🦊✨
